@@ -1,0 +1,43 @@
+server:
+  port: 7070
+spring:
+  application:
+    name: gatewai-interface
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+zuul:
+  routes:
+    resource:
+      sensitiveHeaders:
+      path: /resource/**
+      serviceId: rest-service
+    auth:
+      sensitiveHeaders:
+      path: /auth/**
+      serviceId: authentication-server
+      strip-prefix: false
+  add-host-header: true
+sso:
+  client:
+    accessTokenUri: http://localhost:7070/auth/oauth/token
+    userAuthorizationUri: http://localhost:7070/auth/oauth/authorize
+    clientId: clientIdMock
+    clientSecret: clientSecretMock
+  resource:
+    userInfoUri: http://localhost:7070/resource/rest/me
+logging:
+  level:
+    org.springframework.security: DEBUG
+ribbon:
+  eureka:
+    enabled: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://user:password@localhost:8761/eureka/
+    registerWithEureka: true
